@@ -6,3 +6,4 @@ __pycache__/
 backend/.env
 backend/.env
 backend/.env
+backend/__pycache__/main.cpython-311.pyc
