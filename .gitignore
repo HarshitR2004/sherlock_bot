@@ -5,6 +5,8 @@ backend/.env.*
 # Ignore the sherlock_chromadb folder in the backend directory
 backend/sherlock_chromadb/
 
+# Ignore all __pycache__ folders
+**/__pycache__/
+
 # Other common ignores
-backend/__pycache__/
 *.pyc
