@@ -34,7 +34,7 @@ class QueryInput(BaseModel):
 
 @app.get("/")
 async def root():
-    return {"message": "Welcome to Sherlock Bot API,"}
+    return {"message": "Ah, you've arrived! Welcome to the Sherlock Bot API—where deduction meets data, and every query is a mystery waiting to be solved"}
 
 @app.post("/chat")
 async def chat(query_input: QueryInput):
