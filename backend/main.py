@@ -1,11 +1,19 @@
 from fastapi import FastAPI, HTTPException
 import os
-from os import getenv
 from dotenv import load_dotenv
 from pydantic import BaseModel
 from typing import Optional
 from backend.sherlock_bot import SherlockBot
 from fastapi.middleware.cors import CORSMiddleware
+
+# Load environment variables at startup
+dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
+load_dotenv(dotenv_path)
+
+# Get API key with better error handling
+api_key = os.getenv("API_KEY")
+if not api_key:
+    raise ValueError("API_KEY not found. Please check your .env file")
 
 app = FastAPI()
 
@@ -18,18 +26,11 @@ app.add_middleware(
     allow_headers=["*"],  # Allows all headers
 )
 
-load_dotenv()
-api_key = os.getenv("API_KEY")
-if not api_key:
-    raise ValueError("API_KEY not found in environment variables")
-
 bot = SherlockBot(api_key)
 
 class QueryInput(BaseModel):
     query: str
     conversation_id: Optional[str] = None
-
-
 
 @app.get("/")
 async def root():
@@ -49,7 +50,7 @@ async def chat(query_input: QueryInput):
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    
+
 @app.post("/reset")
 async def reset_conversation(conversation_id: str):
     try:
@@ -57,3 +58,4 @@ async def reset_conversation(conversation_id: str):
         return {"status": "success", "message": "Conversation reset successfully"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
