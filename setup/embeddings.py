@@ -3,7 +3,7 @@ import chromadb
 from tqdm import tqdm
 from sentence_transformers import SentenceTransformer
 
-with open("sherlock_holmes_chunks.json", "r", encoding="utf-8") as f:
+with open("setup\sherlock_holmes_chunks.json", "r", encoding="utf-8") as f:
     sherlock_data = json.load(f)
 
 embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
