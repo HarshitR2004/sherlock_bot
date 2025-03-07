@@ -12,8 +12,7 @@ load_dotenv(dotenv_path)
 
 # Get API key with better error handling
 api_key = os.getenv("API_KEY")
-if not api_key:
-    raise ValueError("API_KEY not found. Please check your .env file")
+
 
 app = FastAPI()
 

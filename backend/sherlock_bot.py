@@ -3,7 +3,7 @@ from openai import OpenAI
 from sentence_transformers import SentenceTransformer
 
 class SherlockBot:
-    def __init__(self, api_key, chroma_path="backend\sherlock_chromadb"):
+    def __init__(self, api_key, chroma_path="backend/sherlock_chromadb"):
         """Initialize SherlockBot with necessary components"""
         self.embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
         self.chroma_client = chromadb.PersistentClient(path=chroma_path)
@@ -48,6 +48,10 @@ class SherlockBot:
         )
 
         return response.choices[0].message.content
+
+    def chat(self, query, conversation_id=None):
+        """Handles chat interactions with Sherlock Holmes"""
+        return self.retrieve_sherlock_response(query)
 
     def chat_with_sherlock(self):
         """Main chatbot loop for engaging with Sherlock Holmes"""
