@@ -1,4 +1,7 @@
 from fastapi import FastAPI, HTTPException
+import os
+from os import getenv
+from dotenv import load_dotenv
 from pydantic import BaseModel
 from typing import Optional
 from backend.sherlock_bot import SherlockBot
@@ -17,11 +20,12 @@ app.add_middleware(
 )
 
 load_dotenv()
-
+api_key = os.getenv("API_KEY")
 bot = SherlockBot(api_key)
 
 class QueryInput(BaseModel):
     query: str
+    conversation_id: Optional[str] = None
 
 
 
