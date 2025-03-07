@@ -1,4 +1,5 @@
-backend/.env
-
-backend/sherlock_chromadb/
-
+// filepath: c:\Users\admin\OneDrive\Desktop\sherlock_bot\.gitignore
+.env
+*.env
+__pycache__/
+*.pyc
