@@ -3,3 +3,6 @@
 *.env
 __pycache__/
 *.pyc
+backend/.env
+backend/.env
+backend/.env
