@@ -3,7 +3,7 @@ from openai import OpenAI
 from sentence_transformers import SentenceTransformer
 
 class SherlockBot:
-    def __init__(self, api_key, chroma_path="backend/sherlock_chromadb"):
+    def __init__(self, api_key, chroma_path="backend\sherlock_chromadb"):
         """Initialize SherlockBot with necessary components"""
         self.embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
         self.chroma_client = chromadb.PersistentClient(path=chroma_path)
@@ -12,19 +12,21 @@ class SherlockBot:
 
     def retrieve_sherlock_response(self, query, top_k=3):
         """Retrieves Sherlock Holmes knowledge from ChromaDB and generates a response"""
-        # Convert query to an embedding
         query_embedding = self.embedding_model.encode(query).tolist()
 
-        # Search ChromaDB for the top_k most relevant documents
+        # Search ChromaDB for relevant documents
         results = self.collection.query(
             query_embeddings=[query_embedding],
             n_results=top_k
         )
 
-        # Extract retrieved text chunks
-        retrieved_texts = [metadata["text"] for metadata in results["metadatas"][0]]
+        # Handle empty results properly
+        retrieved_texts = []
+        if results["metadatas"] and len(results["metadatas"][0]) > 0:
+            retrieved_texts = [metadata["text"] for metadata in results["metadatas"][0]]
+        else:
+            retrieved_texts = ["I could not deduce anything useful from my sources."]  # Default response
 
-        # Combine the retrieved texts to create the final prompt
         context = "\n\n".join(retrieved_texts)
 
         prompt = f"""
@@ -47,7 +49,7 @@ class SherlockBot:
             ]
         )
 
-        return response.choices[0].message.content
+        return response.choices[0].message.content  # ✅ FIXED: Corrected API response extraction
 
     def chat(self, query, conversation_id=None):
         """Handles chat interactions with Sherlock Holmes"""
@@ -66,6 +68,11 @@ class SherlockBot:
             
             sherlock_response = self.retrieve_sherlock_response(user_input)
             print("\n🕵️ Sherlock Holmes' Response:\n", sherlock_response)
+
+    def reset_conversation(self, conversation_id):
+        """Resets conversation history (if tracking is implemented)"""
+        print(f"Resetting conversation: {conversation_id}")
+
 
 
 

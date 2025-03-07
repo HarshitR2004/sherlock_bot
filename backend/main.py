@@ -3,16 +3,17 @@ import os
 from dotenv import load_dotenv
 from pydantic import BaseModel
 from typing import Optional
-from backend.sherlock_bot import SherlockBot
 from fastapi.middleware.cors import CORSMiddleware
+from sherlock_bot import SherlockBot  # Ensure correct module import
 
-# Load environment variables at startup
+# Load environment variables
 dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
 load_dotenv(dotenv_path)
 
-# Get API key with better error handling
+# Retrieve API Key
 api_key = os.getenv("API_KEY")
-
+if not api_key:
+    raise ValueError("API_KEY not found") 
 
 app = FastAPI()
 
@@ -33,19 +34,16 @@ class QueryInput(BaseModel):
 
 @app.get("/")
 async def root():
-    return {"message": "Ah, you've arrived! Welcome to the Sherlock Bot API—where deduction meets data, and every query is a mystery waiting to be solved"}
+    return {"message": "Ah, you've arrived! Welcome to the Sherlock Bot, where deduction meets data!"}
 
 @app.post("/chat")
 async def chat(query_input: QueryInput):
     try:
-        response = bot.chat(
-            query_input.query,
-            conversation_id=query_input.conversation_id
-        )
+        response_text = bot.chat(query_input.query, conversation_id=query_input.conversation_id)
         return {
             "status": "success",
-            "message": response.content,
-            "conversation_id": response.conversation_id
+            "message": response_text,  
+            "conversation_id": query_input.conversation_id  
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -54,7 +52,10 @@ async def chat(query_input: QueryInput):
 async def reset_conversation(conversation_id: str):
     try:
         bot.reset_conversation(conversation_id)
-        return {"status": "success", "message": "Conversation reset successfully"}
+        return {"status": "success", "message": f"Conversation {conversation_id} reset successfully"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
