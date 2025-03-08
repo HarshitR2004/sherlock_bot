@@ -27,7 +27,7 @@ class SherlockBot:
         if results["metadatas"] and len(results["metadatas"][0]) > 0:
             retrieved_texts = [metadata["text"] for metadata in results["metadatas"][0]]
         else:
-            retrieved_texts = ["I could not deduce anything useful from my sources."]  # Default response
+            retrieved_texts = ["I could not deduce anything useful from my sources."]  
 
         context = "\n\n".join(retrieved_texts)
 
