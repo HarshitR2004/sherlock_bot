@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from pydantic import BaseModel
 from typing import Optional
 from fastapi.middleware.cors import CORSMiddleware
-from sherlock_bot import SherlockBot  # Ensure correct module import
+from sherlock_bot import SherlockBot  
 
 # Load environment variables
 dotenv_path = os.path.join(os.path.dirname(__file__), '.env')

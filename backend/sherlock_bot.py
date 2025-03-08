@@ -1,14 +1,16 @@
+import os
+from mistralai import Mistral
 import chromadb
-from openai import OpenAI
 from sentence_transformers import SentenceTransformer
 
 class SherlockBot:
-    def __init__(self, api_key, chroma_path="backend\sherlock_chromadb"):
+    def __init__(self, api_key, chroma_path="backend/sherlock_chromadb"):
         """Initialize SherlockBot with necessary components"""
         self.embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
         self.chroma_client = chromadb.PersistentClient(path=chroma_path)
         self.collection = self.chroma_client.get_collection(name="sherlock_holmes")
-        self.client = OpenAI(api_key=api_key, base_url="https://api.deepseek.com")
+        self.client = Mistral(api_key=api_key)
+        self.model = "mistral-small-latest"
 
     def retrieve_sherlock_response(self, query, top_k=3):
         """Retrieves Sherlock Holmes knowledge from ChromaDB and generates a response"""
@@ -41,15 +43,14 @@ class SherlockBot:
         Answer in Sherlock Holmes' deduction style:
         """
 
-        response = self.client.chat.completions.create(
-            model="deepseek-chat",
+        response = self.client.chat.complete(
+            model=self.model,
             messages=[
-                {"role": "system", "content": "You are Sherlock Holmes, the master detective. Stay within the lore of the books."},
                 {"role": "user", "content": prompt}
             ]
         )
 
-        return response.choices[0].message.content  # ✅ FIXED: Corrected API response extraction
+        return response.choices[0].message.content
 
     def chat(self, query, conversation_id=None):
         """Handles chat interactions with Sherlock Holmes"""
