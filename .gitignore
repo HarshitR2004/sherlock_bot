@@ -4,7 +4,9 @@ backend/.env.*
 
 
 # Ignore all __pycache__ folders
-**/__pycache__/
+__pycache__/
+*.py[cod]
+*$py.class
 
 # Other common ignores
 *.pyc
