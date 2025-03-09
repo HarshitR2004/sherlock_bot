@@ -46,10 +46,10 @@ class SherlockBot:
         Answer in Sherlock Holmes' deduction style:
         """
 
-        response = self.client.chat(
+        response = self.client.chat.complete(
             model=self.model,
             messages=[{"role": "user", "content": prompt}]
-        )
+        )   
 
         return response['choices'][0]['message']['content']
     
