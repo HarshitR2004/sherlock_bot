@@ -27,7 +27,9 @@ app.add_middleware(
     allow_headers=["*"],  # Allows all headers
 )
 
-bot = SherlockBot(api_key)
+chroma_path = os.path.join("backend", "sherlock_chromadb")
+
+bot = SherlockBot(api_key,chroma_path)
 
 class QueryInput(BaseModel):
     query: str
