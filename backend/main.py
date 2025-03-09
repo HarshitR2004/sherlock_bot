@@ -28,7 +28,6 @@ app.add_middleware(
 )
 
 chroma_path = os.path.join("backend", "sherlock_chromadb")
-
 bot = SherlockBot(api_key,chroma_path)
 
 class QueryInput(BaseModel):

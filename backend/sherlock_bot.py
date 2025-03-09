@@ -4,13 +4,21 @@ import chromadb
 from sentence_transformers import SentenceTransformer
 
 class SherlockBot:
-    def __init__(self, api_key, chroma_path):
+    def __init__(self, api_key, chroma_path='backend/sherlock_chromadb'):
         """Initialize SherlockBot with necessary components"""
         self.embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
         self.chroma_client = chromadb.PersistentClient(path=chroma_path)
-        self.collection = self.chroma_client.get_collection(name="sherlock_holmes")
-        self.client = Mistral(api_key=api_key)
-        self.model = "mistral-small-latest"
+
+        # Debugging: Print available collections
+        existing_collections = self.chroma_client.list_collections()
+        print(f"📌 Available Collections: {[c.name for c in existing_collections]}")
+
+        # Ensure collection exists
+        try:
+            self.collection = self.chroma_client.get_collection(name="sherlock_holmes")
+        except:
+            print("⚠️ Collection not found. Creating a new one...")
+            self.collection = self.chroma_client.create_collection(name="sherlock_holmes")
 
     def retrieve_sherlock_response(self, query, top_k=3):
         """Retrieves Sherlock Holmes knowledge from ChromaDB and generates a response"""
