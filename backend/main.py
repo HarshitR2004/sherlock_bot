@@ -28,6 +28,10 @@ app.add_middleware(
 )
 
 chroma_path = os.path.join("backend", "sherlock_chromadb")
+if not os.path.exists(chroma_path):
+    os.makedirs(chroma_path)
+
+# Initialize SherlockBot
 bot = SherlockBot(api_key,chroma_path)
 
 class QueryInput(BaseModel):
