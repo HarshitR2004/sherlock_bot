@@ -5,6 +5,7 @@ from pydantic import BaseModel
 from typing import Optional
 from fastapi.middleware.cors import CORSMiddleware
 from sherlock_bot import SherlockBot  
+import uvicorn
 
 # Load environment variables
 dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
@@ -74,5 +75,5 @@ async def reset_conversation(conversation_id: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
+    port = int(os.getenv("PORT", 10000))  
+    uvicorn.run(app, host="0.0.0.0", port=port)
