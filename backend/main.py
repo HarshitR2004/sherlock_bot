@@ -34,7 +34,24 @@ class QueryInput(BaseModel):
 
 @app.get("/")
 async def root():
-    return {"message": "Ah, you've arrived! Welcome to the Sherlock Bot, where deduction meets data!"}
+    return {
+        "api": {
+            "title": "THE SHERLOCK HOLMES DETECTIVE API",
+            "version": "1.0.0"
+        },
+        "welcome_message": {
+            "title": "THE GAME IS AFOOT!",
+            "subtitle": "221B Baker Street • Established 1887 • Digital Consultancy"
+        },
+        "introduction": "I am Sherlock Holmes, the world's only consulting detective. Through this digital interface, my methods of observation, deduction, and analysis are at your service. No puzzle too small, no mystery too complex.",
+        "quotation": "When you have eliminated the impossible, whatever remains, however improbable, must be the truth.",
+        "status": {
+            "investigations": "OPEN FOR CONSULTATION",
+            "telegraph": "OPERATIONAL",
+            "mood": "CONTEMPLATIVE"
+        },
+        "signature": "Yours in the pursuit of logic and reason, S.H."
+    }
 
 @app.post("/chat")
 async def chat(query_input: QueryInput):
