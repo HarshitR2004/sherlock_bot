@@ -62,7 +62,7 @@ async def root():
 @app.post("/chat")
 async def chat(query_input: QueryInput):
     try:
-        response_text = bot.chat(query_input.query, conversation_id=query_input.conversation_id)
+        response_text = bot.chat_with_sherlock(query_input.query, conversation_id=query_input.conversation_id)
         return {
             "status": "success",
             "message": response_text,  
