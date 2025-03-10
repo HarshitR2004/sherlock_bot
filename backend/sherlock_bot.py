@@ -6,7 +6,8 @@ from sentence_transformers import SentenceTransformer
 class SherlockBot:
     def __init__(self, api_key, chroma_path):
         """Initialize SherlockBot with necessary components"""
-        self.embedding_model = SentenceTransformer('backend\all-MiniLM-L6-v2') 
+        model_path = os.path.join("backend", "all-MiniLM-L6-v2")
+        self.embedding_model = SentenceTransformer(model_path) 
         self.chroma_client = chromadb.PersistentClient(path=chroma_path)
         
         try:
