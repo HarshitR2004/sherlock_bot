@@ -1,48 +1,96 @@
-import { useState } from "react";
-import "./VictorianTheme.css"; // Import your custom CSS
+import { useState, useEffect } from "react";
+import "./VictorianTheme.css";
+
+interface Message {
+  text: string;
+  sender: string;
+}
 
 function App() {
-  const [messages, setMessages] = useState<{ text: string; sender: string }[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
+  const [currentMessage, setCurrentMessage] = useState("");
+  const [conversationId, setConversationId] = useState<string | null>(null);
+  const [isTyping, setIsTyping] = useState(false);
 
-  // Function to send a message
-  const sendMessage = () => {
+  useEffect(() => {
+    async function initializeConversation() {
+      const response = await fetch("https://sherlockbot.onrender.com/start");
+      const data = await response.json();
+      setConversationId(data.conversation_id);
+    }
+    initializeConversation(); 
+  }, []);
+
+  const sendMessage = async () => {
     if (input.trim() === "") return;
 
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      { text: input, sender: "You" },
-      { text: `Ah, an interesting query: "${input}"! Let me investigate...`, sender: "Sherlock" },
-    ]);
+    const userMessage: Message = { text: input, sender: "You" };
+    setMessages((prev) => [...prev, userMessage]);
+    setInput("");
+    setIsTyping(true);
 
-    setInput(""); // Clear input after sending
+    try {
+      const response = await fetch("https://sherlockbot.onrender.com/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: input, conversation_id: conversationId }),
+      });
+      
+      const data = await response.json();
+      if (data.status === "success") {
+        setConversationId(data.conversation_id);
+        renderWordByWord(data.message, "Sherlock");
+      }
+    } catch (error) {
+      console.error("Error fetching chatbot response:", error);
+    }
   };
 
-  // Function to reset the chat
-  const resetChat = () => {
-    setMessages([]); // Clears all chat messages
+  const renderWordByWord = (message: string, sender: string) => {
+    let words = message.split(" ");
+    let index = 0;
+    setCurrentMessage("");
+
+    const interval = setInterval(() => {
+      if (index < words.length) {
+        setCurrentMessage((prev) => prev + words[index] + " ");
+        index++;
+      } else {
+        clearInterval(interval);
+        setMessages((prev) => [...prev, { text: currentMessage + words[index - 1], sender }]);
+        setCurrentMessage("");
+        setIsTyping(false);
+      }
+    }, 100);
+  };
+
+  const resetChat = async () => {
+    if (!conversationId) return;
+    try {
+      await fetch("https://sherlockbot.onrender.com/reset", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ conversation_id: conversationId }),
+      });
+      setMessages([]);
+      setConversationId(null);
+    } catch (error) {
+      console.error("Error resetting chat:", error);
+    }
   };
 
   return (
     <div className="victorian-container">
-      {/* Title */}
-      <h1 className="victorian-title">
-        🕵️ <span>Sherlock Chatbot</span>
-      </h1>
-
-      {/* Chatbox */}
+      <h1 className="victorian-title">🕵️ <span>Sherlock Chatbot</span></h1>
       <div className="victorian-chatbox">
         {messages.map((msg, index) => (
-          <div
-            key={index}
-            className={`victorian-message ${msg.sender === "You" ? "text-right" : "text-left"} fade-in`}
-          >
+          <div key={index} className={`victorian-message ${msg.sender === "You" ? "text-right" : "text-left"} fade-in`}>
             <strong className="victorian-message-strong">{msg.sender}:</strong> {msg.text}
           </div>
         ))}
+        {isTyping && <div className="victorian-message text-left fade-in">Sherlock: {currentMessage}</div>}
       </div>
-
-      {/* Input Field */}
       <div className="victorian-input-container">
         <input
           type="text"
@@ -50,18 +98,12 @@ function App() {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Ask Sherlock..."
-          onKeyDown={(e) => e.key === "Enter" && sendMessage()} // Send on Enter key
+          onKeyDown={(e) => e.key === "Enter" && sendMessage()}
         />
       </div>
-
-      {/* Buttons Container */}
       <div className="victorian-button-container">
-        <button className="victorian-button" onClick={sendMessage}>
-          Send
-        </button>
-        <button className="victorian-button victorian-reset-button" onClick={resetChat}>
-          Reset Chat
-        </button>
+        <button className="victorian-button" onClick={sendMessage}>Send</button>
+        <button className="victorian-button victorian-reset-button" onClick={resetChat}>Reset Chat</button>
       </div>
     </div>
   );
