@@ -1,6 +1,3 @@
-I'll update the README to remove the folder structure and add links for the API and the live app.
-
-```markdown:c:\Users\admin\OneDrive\Desktop\sherlock_bot\README.md
 # 🕵️ Sherlock Holmes Detective Chatbot
 
 A sophisticated AI-powered chatbot that embodies the character of Sherlock Holmes, the world's greatest consulting detective. This application allows users to interact with a virtual Sherlock Holmes who responds to queries with the deductive reasoning and Victorian-era flair characteristic of Sir Arthur Conan Doyle's iconic character.
@@ -49,8 +46,8 @@ The application follows a client-server architecture:
 
 ## 🔗 Links
 
-- **Live Application**: [Sherlock Holmes Detective Chatbot](https://sherlockbot.onrender.com)
-- **API Endpoint**: [Sherlock Holmes API](https://sherlockbot.onrender.com/api)
+- **Live Application**: [Sherlock Holmes Detective Chatbot](https://sherlock-bot.onrender.com/)
+- **API Endpoint**: [Sherlock Holmes API](https://sherlockbot.onrender.com/)
 
 ## 🚀 Getting Started
 
@@ -66,39 +63,31 @@ The application follows a client-server architecture:
    git clone https://github.com/yourusername/sherlock-bot.git
    cd sherlock-bot
    ```
-
-2. Set up environment variables:
-   Create a `.env` file in the `api` directory with your Mistral AI API key:
-   ```
+2. Set up environment variables: Create a `.env` file in the `api` directory with your Mistral AI API key:
+   ```env
    API_KEY=your_mistral_ai_api_key
    ```
-
 3. Install backend dependencies:
    ```bash
    cd api
    pip install -r requirements.txt
    ```
-
 4. Install frontend dependencies:
    ```bash
    cd frontend
    npm install
    ```
-
 5. Start the backend server:
    ```bash
    cd api
    uvicorn main:app --host 0.0.0.0 --port 8000
    ```
-
 6. Start the frontend development server:
    ```bash
    cd frontend
    npm run dev
    ```
-
-7. Access the application:
-   Open your browser and navigate to the URL shown in your terminal (typically `http://localhost:5173`)
+7. Access the application: Open your browser and navigate to the URL shown in your terminal (typically `http://localhost:5173`)
 
 ## 💻 Development
 
@@ -117,21 +106,16 @@ npm run dev
 ```
 
 ## 🔒 Security Notes
-
 - API keys should be kept secure and not committed to version control
 - The application uses CORS with appropriate restrictions for API access
 
 ## 🤝 Contributing
-
 Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## 📄 License
-
 This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## 🙏 Acknowledgements
-
-- Sir Arthur Conan Doyle for creating the timeless character of Sherlock Holmes
-- Mistral AI for providing the language model capabilities
-- All contributors and maintainers of the open-source libraries used in this project
-```
+- **Sir Arthur Conan Doyle** for creating the timeless character of Sherlock Holmes
+- **Mistral AI** for providing the language model capabilities
+- **All contributors and maintainers** of the open-source libraries used in this project
