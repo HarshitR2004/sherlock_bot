@@ -4,7 +4,9 @@ backend/.env.*
 
 
 # Ignore all __pycache__ folders
+__pycache__/
 backend/__pycache__/
+api/__pycache__/
 *.py[cod]
 *$py.class
 
