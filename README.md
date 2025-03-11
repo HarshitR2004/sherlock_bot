@@ -12,7 +12,6 @@ The Sherlock Holmes Detective Chatbot combines modern AI technology with classic
 - **Knowledge Base**: Built on the complete works of Sherlock Holmes by Sir Arthur Conan Doyle
 - **Victorian-Era UI**: A thematically appropriate user interface that evokes the aesthetic of 221B Baker Street
 - **Word-by-Word Response Animation**: Responses appear gradually, simulating the detective's thoughtful deduction process
-- **Conversation Management**: Start new investigations or continue existing ones with conversation tracking
 
 ## 🛠️ Technology Stack
 
