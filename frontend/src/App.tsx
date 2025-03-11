@@ -50,20 +50,23 @@ function App() {
   const renderWordByWord = (message: string, sender: string) => {
     let words = message.split(" ");
     let index = 0;
+    let tempMessage = "";  // Temporary variable to hold the accumulating message
     setCurrentMessage("");
-
+  
     const interval = setInterval(() => {
       if (index < words.length) {
-        setCurrentMessage((prev) => prev + words[index] + " ");
+        tempMessage += words[index] + " ";
+        setCurrentMessage(tempMessage);
         index++;
       } else {
         clearInterval(interval);
-        setMessages((prev) => [...prev, { text: currentMessage + words[index - 1], sender }]);
+        setMessages((prev) => [...prev, { text: tempMessage.trim(), sender }]);  // Ensure full message is saved
         setCurrentMessage("");
         setIsTyping(false);
       }
     }, 100);
   };
+  
 
   const resetChat = async () => {
     if (!conversationId) return;
