@@ -5,6 +5,7 @@ from pydantic import BaseModel
 from typing import Optional
 from fastapi.middleware.cors import CORSMiddleware
 from sherlock_bot import SherlockBot  
+import uvicorn
 
 # Load environment variables
 dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
@@ -26,7 +27,12 @@ app.add_middleware(
     allow_headers=["*"],  # Allows all headers
 )
 
-bot = SherlockBot(api_key)
+chroma_path = os.path.join("backend", "sherlock_chromadb")
+if not os.path.exists(chroma_path):
+    os.makedirs(chroma_path)
+
+# Initialize SherlockBot
+bot = SherlockBot(api_key,chroma_path)
 
 class QueryInput(BaseModel):
     query: str
@@ -34,7 +40,24 @@ class QueryInput(BaseModel):
 
 @app.get("/")
 async def root():
-    return {"message": "Ah, you've arrived! Welcome to the Sherlock Bot, where deduction meets data!"}
+    return {
+        "api": {
+            "title": "THE SHERLOCK HOLMES DETECTIVE API",
+            "version": "1.0.0"
+        },
+        "welcome_message": {
+            "title": "THE GAME IS AFOOT!",
+            "subtitle": "221B Baker Street • Established 1887 • Digital Consultancy"
+        },
+        "introduction": "I am Sherlock Holmes, the world's only consulting detective. Through this digital interface, my methods of observation, deduction, and analysis are at your service. No puzzle too small, no mystery too complex.",
+        "quotation": "When you have eliminated the impossible, whatever remains, however improbable, must be the truth.",
+        "status": {
+            "investigations": "OPEN FOR CONSULTATION",
+            "telegraph": "OPERATIONAL",
+            "mood": "CONTEMPLATIVE"
+        },
+        "signature": "Yours in the pursuit of logic and reason, S.H."
+    }
 
 @app.post("/chat")
 async def chat(query_input: QueryInput):
@@ -57,5 +80,5 @@ async def reset_conversation(conversation_id: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
+    port = int(os.getenv("PORT", 10000))  
+    uvicorn.run(app, host="0.0.0.0", port=port)

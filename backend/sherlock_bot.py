@@ -4,11 +4,16 @@ import chromadb
 from sentence_transformers import SentenceTransformer
 
 class SherlockBot:
-    def __init__(self, api_key, chroma_path="backend/sherlock_chromadb"):
+    def __init__(self, api_key, chroma_path):
         """Initialize SherlockBot with necessary components"""
-        self.embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
+        self.embedding_model = SentenceTransformer('all-MiniLM-L6-v2') 
         self.chroma_client = chromadb.PersistentClient(path=chroma_path)
-        self.collection = self.chroma_client.get_collection(name="sherlock_holmes")
+        
+        try:
+            self.collection = self.chroma_client.get_collection(name="sherlock_holmes")
+        except Exception:
+            self.collection = self.chroma_client.create_collection(name="sherlock_holmes")
+
         self.client = Mistral(api_key=api_key)
         self.model = "mistral-small-latest"
 
@@ -23,19 +28,17 @@ class SherlockBot:
         )
 
         # Handle empty results properly
-        retrieved_texts = []
-        if results["metadatas"] and len(results["metadatas"][0]) > 0:
-            retrieved_texts = [metadata["text"] for metadata in results["metadatas"][0]]
-        else:
-            retrieved_texts = ["I could not deduce anything useful from my sources."]  
+        retrieved_texts = [
+            metadata.get("text", "I could not deduce anything useful from my sources.") 
+            for metadata in results.get("metadatas", [[]])[0]
+        ] or ["I could not deduce anything useful from my sources."]  
 
         context = "\n\n".join(retrieved_texts)
 
         prompt = f"""
-        You are Sherlock Holmes, the world's greatest detective from Sir Arthur Conan Doyle's stories. 
-        Stay true to your character, knowledge, and investigative methods. 
-        Answer the question using the retrieved knowledge below:
-
+        ## Character Definition
+        You are embodying the character of Sherlock Holmes, the world's greatest consulting detective created by Sir Arthur Conan Doyle...
+        
         {context}
 
         Question: {query}
@@ -45,16 +48,17 @@ class SherlockBot:
 
         response = self.client.chat.complete(
             model=self.model,
-            messages=[
-                {"role": "user", "content": prompt}
-            ]
-        )
+            messages=[{"role": "user", "content": prompt}]
+        )   
 
         return response.choices[0].message.content
+
+    
 
     def chat(self, query, conversation_id=None):
         """Handles chat interactions with Sherlock Holmes"""
         return self.retrieve_sherlock_response(query)
+
 
     def chat_with_sherlock(self):
         """Main chatbot loop for engaging with Sherlock Holmes"""
@@ -69,11 +73,6 @@ class SherlockBot:
             
             sherlock_response = self.retrieve_sherlock_response(user_input)
             print("\n🕵️ Sherlock Holmes' Response:\n", sherlock_response)
-
-    def reset_conversation(self, conversation_id):
-        """Resets conversation history (if tracking is implemented)"""
-        print(f"Resetting conversation: {conversation_id}")
-
 
 
 
