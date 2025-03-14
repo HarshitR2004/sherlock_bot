@@ -31,7 +31,7 @@ function App() {
     setIsTyping(true);
 
     try {
-      const response = await fetch("https://sherlockbot.onrender.com/chat", {
+      const response = await fetch("https://sherlockbot.onrender.com/webhook", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query: input, conversation_id: conversationId }),
