@@ -70,6 +70,16 @@ async def chat(query_input: QueryInput):
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+    
+@app.post("/webhook")
+async def webhook(query_input: QueryInput):
+    try:
+        task = process_chat.apply_async(args=[query_input.query, query_input.conversation_id])
+        return task.get()  # Return only the message once processed
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 @app.post("/reset")
 async def reset_conversation(conversation_id: str):
