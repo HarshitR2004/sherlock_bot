@@ -75,7 +75,11 @@ async def chat(query_input: QueryInput):
 async def webhook(query_input: QueryInput):
     try:
         response_text = bot.chat(query_input.query, query_input.conversation_id)
-        return response_text
+        return {
+            "status": "success",
+            "message": response_text,  
+            "conversation_id": query_input.conversation_id  
+        }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
