@@ -92,7 +92,7 @@ The application follows a client-server architecture:
 
 ### Backend Development
 ```bash
-cd api
+cd backend
 pip install -r requirements.txt
 uvicorn main:app --reload
 ```
